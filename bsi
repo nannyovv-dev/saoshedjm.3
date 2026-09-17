@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basketball Exam Cheat Sheet & Mini Game</title>
+  <!-- ดึงฟอนต์น่ารักๆ ไซส์อวบมน อ่านง่ายไม่เจ็บตา -->
+  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;600&family=Prompt:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --accent-yellow: #ffcc00;
+      --bright-yellow: #ffee55;
+      --text-dark: #111111;
+      --text-light: #f5f5f5;
+      --gray-sub: #aaaaaa;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Mitr', 'Prompt', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-light);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    /* Header Design */
+    header {
+      text-align: center;
+      background: var(--accent-yellow);
+      color: var(--text-dark);
+      padding: 25px 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(255, 204, 0, 0.2);
+      margin-bottom: 25px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 600;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 1.1rem;
+    }
+
+    /* Tab navigation */
+    .tab-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: #2a2a2a;
+      color: var(--text-light);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--accent-yellow);
+      color: var(--text-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Content Cards */
+    .tab-content {
+      display: none;
+      background: var(--card-bg);
+      border: 3px solid var(--accent-yellow);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Typography & Lists inside cards */
+    h2 {
+      color: var(--accent-yellow);
+      border-bottom: 2px dashed var(--accent-yellow);
+      padding-bottom: 8px;
+      margin-top: 0;
+    }
+
+    ul, ol {
+      padding-left: 20px;
+      line-height: 1.8;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .highlight {
+      background: var(--accent-yellow);
+      color: var(--text-dark);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    /* Action Buttons */
+    .btn-action {
+      background: var(--accent-yellow);
+      color: var(--text-dark);
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 15px;
+      transition: 0.2s;
+    }
+
+    .btn-action:hover {
+      background: var(--bright-yellow);
+      transform: scale(1.05);
+    }
+
+    /* Game Styles */
+    #game-container {
+      text-align: center;
+    }
+
+    #court {
+      width: 100%;
+      height: 250px;
+      background: #2a2a2a;
+      border: 3px solid var(--accent-yellow);
+      border-radius: 15px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    #hoop {
+      width: 60px;
+      height: 10px;
+      background: #ff4444;
+      border-radius: 5px;
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 10px #ff4444;
+    }
+
+    #ball {
+      width: 35px;
+      height: 35px;
+      background: var(--accent-yellow);
+      border: 2px solid #000;
+      border-radius: 50%;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: bottom 0.5s ease-out, left 0.5s ease-out;
+    }
+
+    .score-board {
+      font-size: 1.5rem;
+      color: var(--bright-yellow);
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>🏀 Basketball Exam Cheat Sheet</h1>
+    <p>สรุปเนื้อหาเตรียมสอบบาสเกตบอล + มินิเกมชู้ตบาส</p>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="openTab('summary')">📝 สรุปข้อสอบ</button>
+    <button class="tab-btn" onclick="openTab('written')">✍️ สรุปข้อเขียน</button>
+    <button class="tab-btn" onclick="openTab('game')">🎮 เกมชู้ตบาส</button>
+  </div>
+
+  <!-- Tab 1: สรุปข้อสอบปรนัย -->
+  <div id="summary" class="tab-content active">
+    <h2>📌 สรุปประเด็นหลักสำหรับข้อสอบ</h2>
+    <button class="btn-action" onclick="speakText('summary-text')">🔊 กดเพื่อฟังเสียงอ่าน</button>
+    
+    <div id="summary-text">
+      <ul>
+        <li><span class="highlight">ประวัติ & ผู้ก่อตั้ง:</span> กำเนิดที่ประเทศสหรัฐอเมริกา คิดค้นโดย ดร.เจมส์ เนสมิท (James Naismith)</li>
+        <li><span class="highlight">จำนวนผู้เล่น:</span> ลงสนามในสนามฝั่งละ <strong>5 คน</strong></li>
+        <li><span class="highlight">เวลาการแข่งขัน:</span> แบ่งเป็น <strong>4 ควอเตอร์ (Quarter)</strong></li>
+        <li><span class="highlight">กติกานับเวลาสำคัญ:</span>
+          <ul>
+            <li>ต้องพาบอลข้ามครึ่งสนาม (แดนหลังไปแดนหน้า) ภายใน <span class="highlight">8 วินาที</span></li>
+            <li>ทีมบุกต้องทำคะแนน/ยิงประตูภายใน <span class="highlight">24 วินาที</span></li>
+          </ul>
+        </li>
+        <li><span class="highlight">ขนาดอุปกรณ์มาตรฐาน:</span> ความสูงจากพื้นถึงขอบห่วงบาสเกตบอล เท่ากับ <span class="highlight">3.05 เมตร</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tab 2: สรุปข้อเขียน 2 ข้อ -->
+  <div id="written" class="tab-content">
+    <h2>✍️ สรุปแนวข้อเขียน 2 ข้อใหญ่</h2>
+    <button class="btn-action" onclick="speakText('written-text')">🔊 กดเพื่อฟังเสียงอ่าน</button>
+
+    <div id="written-text">
+      <h3>ข้อที่ 1: ตำแหน่งการเล่นและหน้าที่หลัก</h3>
+      <p><em>(อาจารย์สุ่มออก 2 ตำแหน่ง ต้องอ่านและจำให้ครบทุกตำแหน่ง)</em></p>
+      <ul>
+        <li><strong>Point Guard (PG):</strong> พอยต์การ์ด - ถือบอล คุมจังหวะเกม จ่ายบอล เซ็ตแผนการบุก</li>
+        <li><strong>Shooting Guard (SG):</strong> ชูตติ้งการ์ด - เน้นการทำคะแนนจากระยะกลางและระยะ 3 คะแนน</li>
+        <li><strong>Small Forward (SF):</strong> สมอลฟอร์เวิร์ด - ผู้เล่นสารพัดประโยชน์ ทำคะแนนได้ทั้งวงนอกและวงใน</li>
+        <li><strong>Power Forward (PF):</strong> เพาเวอร์ฟอร์เวิร์ด - เน้นเกมรีบาวด์ วงใน และช่วยป้องกันใต้ห่วง</li>
+        <li><strong>Center (C):</strong> เซนเตอร์ - รูปร่างใหญ่ที่สุด ป้องกันใต้ห่วง เล่นเกมรีบาวด์ และบล็อกลูกยิง</li>
+      </ul>
+
+      <hr style="border: 1px dashed var(--accent-yellow); margin: 20px 0;">
+
+      <h3>ข้อที่ 2: ทักษะบาสเกตบอลที่เรียนในคาบ</h3>
+      <p><em>(ตอบจำนวนทักษะทั้งหมด พร้อมไล่เรียงชื่อทักษะให้ครบถ้วน)</em></p>
+      <ol>
+        <li>การส่งบอล 2 มือระดับอก</li>
+        <li>การส่งบอล 2 มือเหนือศีรษะ</li>
+        <li>การส่งบอล 2 มือกระดอนพื้น</li>
+        <li>การเลี้ยงบอลระดับต่ำ</li>
+        <li>การเลี้ยงบอลระดับสูง</li>
+        <li>การส่งบอลมือเดียวเหนือศีรษะ</li>
+        <li>การส่งบอลมือเดียวกระดอนพื้น</li>
+        <li>การยิงประตู (ชู้ต) มือเดียว</li>
+        <li>การเลย์อัพ (Lay-up)</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Tab 3: Mini Game -->
+  <div id="game" class="tab-content">
+    <h2>🎯 มินิเกม: ชู้ตบาสคลายเครียด</h2>
+    <p>กดปุ่ม <strong>"ชู้ตบาสเลย!"</strong> เพื่อสุ่มยิงทำคะแนน!</p>
+    
+    <div id="game-container">
+      <div class="score-board">คะแนน: <span id="score">0</span></div>
+      <div id="court">
+        <div id="hoop"></div>
+        <div id="ball">🏀</div>
+      </div>
+      <button class="btn-action" style="font-size: 1.2rem; margin-top: 20px;" onclick="shootBall()">🏀 ชู้ตบาสเลย!</button>
+      <p id="game-message" style="margin-top: 10px; font-weight: bold; min-height: 24px;"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tab Switch logic
+  function openTab(tabName) {
+    const contents = document.querySelectorAll('.tab-content');
+    const buttons = document.querySelectorAll('.tab-btn');
+    
+    contents.forEach(content => content.classList.remove('active'));
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    document.getElementById(tabName).classList.add('active');
+    event.currentTarget.classList.add('active');
+    
+    // Stop reading audio if switching tabs
+    window.speechSynthesis.cancel();
+  }
+
+  // Text-To-Speech API function
+  function speakText(elementId) {
+    window.speechSynthesis.cancel(); // Stop current playing speech
+    const text = document.getElementById(elementId).innerText;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'th-TH';
+    utterance.rate = 1.0;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // Mini Basketball Game Logic
+  let score = 0;
+  let isShooting = false;
+
+  function shootBall() {
+    if (isShooting) return;
+    isShooting = true;
+
+    const ball = document.getElementById('ball');
+    const msg = document.getElementById('game-message');
+    
+    // Randomize score chance (60% success)
+    const isGoal = Math.random() < 0.6;
+    
+    // Animate Ball
+    ball.style.bottom = "180px";
+    
+    if (isGoal) {
+      // Curve to center hoop
+      ball.style.left = "50%";
+      setTimeout(() => {
+        score += 2;
+        document.getElementById('score').innerText = score;
+        msg.style.color = "#ffee55";
+        msg.innerText = "SWISH! 🏀 สวบลงห่วงไปสวยๆ +2 คะแนน!";
+      }, 300);
+    } else {
+      // Random miss direction
+      const randomOffset = Math.random() < 0.5 ? "35%" : "65%";
+      ball.style.left = randomOffset;
+      setTimeout(() => {
+        msg.style.color = "#ff4444";
+        msg.innerText = "AIR BALL! ❌ เฉียดห่วงไปนิดเดียว!";
+      }, 300);
+    }
+
+    // Reset Ball Position
+    setTimeout(() => {
+      ball.style.bottom = "20px";
+      ball.style.left = "50%";
+      isShooting = false;
+    }, 1000);
+  }
+</script>
+
+</body>
+</html>
